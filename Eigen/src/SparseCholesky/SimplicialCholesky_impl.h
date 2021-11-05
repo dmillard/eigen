@@ -24,6 +24,8 @@ the Mozilla Public License v. 2.0, as stated at the top of this file.
 
 namespace Eigen {
 
+constexpr bool kCheckPosDef = false;
+
 template<typename Derived>
 void SimplicialCholeskyBase<Derived>::analyzePattern_preordered(const CholMatrixType& ap, bool doLDLT)
 {
@@ -149,7 +151,7 @@ void SimplicialCholeskyBase<Derived>::factorize_preordered(const CholMatrixType&
     if(DoLDLT)
     {
       m_diag[k] = d;
-      if(d == RealScalar(0))
+      if(kCheckPosDef && d == RealScalar(0))
       {
         ok = false;                         /* failure, D(k,k) is zero */
         break;
@@ -159,7 +161,7 @@ void SimplicialCholeskyBase<Derived>::factorize_preordered(const CholMatrixType&
     {
       Index p = Lp[k] + m_nonZerosPerCol[k]++;
       Li[p] = k ;                /* store L(k,k) = sqrt (d) in column k */
-      if(d <= RealScalar(0)) {
+      if(kCheckPosDef && d <= RealScalar(0)) {
         ok = false;              /* failure, matrix is not positive definite */
         break;
       }
